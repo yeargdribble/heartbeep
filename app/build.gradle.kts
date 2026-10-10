@@ -40,21 +40,24 @@ android {
         }
     }
 
-    buildTypes {
-        val ciConfig = signingConfigs.findByName("ci")
-        debug {
-            if (ciConfig != null) signingConfig = ciConfig
-        }
-        release {
-            isMinifyEnabled = true
-            isShrinkResources = true
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro",
-            )
-            if (ciConfig != null) signingConfig = ciConfig
-        }
+   buildTypes {
+    debug {
+        // Use Android's automatically generated debug signing key
+        signingConfig = signingConfigs.getByName("debug")
     }
+
+    release {
+        isMinifyEnabled = true
+        isShrinkResources = true
+        proguardFiles(
+            getDefaultProguardFile("proguard-android-optimize.txt"),
+            "proguard-rules.pro",
+        )
+
+        val ciConfig = signingConfigs.findByName("ci")
+        if (ciConfig != null) signingConfig = ciConfig
+    }
+}
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
